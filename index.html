@@ -278,7 +278,8 @@
             }
 
             .hero-img-container img {
-                object-position: top center; 
+                /* HÄR ÄR FIXEN: Fokus på 35% ner i bilden (ögonhöjd) istället för toppen */
+                object-position: center 35%; 
             }
             
             .work-grid { grid-template-columns: 1fr; gap: 3rem; }
@@ -287,11 +288,10 @@
             .filter-menu { padding-right: var(--spacing-outer); }
         }
         
-        /* --- ANIMATION (Här är magin) --- */
+        /* --- ANIMATION --- */
         .reveal { 
             opacity: 0; 
-            transform: translateY(50px); /* Mer avstånd för tydligare rörelse */
-            /* Längre tid (1.5s) och en mjukare kurva */
+            transform: translateY(50px); 
             transition: all 1.5s cubic-bezier(0.22, 1, 0.36, 1); 
         }
         .reveal.active { 
