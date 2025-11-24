@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andreas Dahl — Portfolio</title>
+    <style>
+        /* --- 1. CORE & VARIABLES --- */
+        :root {
+            --bg-color: #FAFAFA; 
+            --text-main: #050505;
+            --text-muted: #888888;
+            --spacing-outer: 4vw; 
+            --font-stack: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; /* Hide default cursor */ }
+        
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-stack);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* --- 2. CUSTOM CURSOR (IMPROVED VISIBILITY) --- */
+        .cursor {
+            width: 16px; /* Större, tydligare prick */
+            height: 16px;
+            background-color: #fff; /* Vit fyllning */
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s cubic-bezier(0.19, 1, 0.22, 1), 
+                        height 0.3s cubic-bezier(0.19, 1, 0.22, 1), 
+                        background-color 0.3s;
+            mix-blend-mode: difference; /* Inverterar färgen mot bakgrunden = Alltid synlig */
+        }
+
+        /* När man hovrar över något klickbart */
+        .cursor.hovered {
+            width: 60px;
+            height: 60px;
+            background-color: transparent; /* Blir genomskinlig */
+            border: 2px solid #fff; /* Vit ram (som blir svart mot vit bakgrund pga difference) */
+        }
+
+        /* Dölj custom cursor på mobil/touch */
+        @media (hover: none) { .cursor { display: none; } * { cursor: auto; } }
+
+        /* --- 3. TYPOGRAPHY --- */
+        h1 {
+            font-size: clamp(3.5rem, 8vw, 9rem);
+            line-height: 0.9;
+            letter-spacing: -0.04em;
+            font-weight: 400;
+            margin-bottom: 2rem;
+        }
+
+        p {
+            font-size: 1.125rem;
+            line-height: 1.5;
+            color: var(--text-muted);
+            max-width: 580px;
+        }
+
+        .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: block;
+            color: var(--text-main);
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* --- 4. LAYOUT --- */
+        .container {
+            padding: 0 var(--spacing-outer);
+            max-width: 1920px;
+            margin: 0 auto;
+        }
+
+        /* --- 5. STICKY HEADER --- */
+        header {
+            padding: 2rem var(--spacing-outer);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            background: rgba(250, 250, 250, 0.85);
+            backdrop-filter: blur(12px);
+            transition: transform 0.3s ease;
+        }
+
+        .logo { font-weight: 700; font-size: 1rem; letter-spacing: -0.02em; text-transform: uppercase; }
+        .nav-link { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; position: relative; }
+        
+        .nav-link::after {
+            content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: #000; transition: width 0.3s;
+        }
+        .nav-link:hover::after { width: 100%; }
+
+        /* --- 6. HERO SECTION --- */
+        .hero {
+            padding: 25vh 0 10vh 0;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 4rem;
+            align-items: end;
+        }
+
+        .hero-img-container {
+            position: relative;
+            width: 100%;
+            height: 65vh; 
+            overflow: hidden;
+        }
+
+        .hero-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        /* --- 7. FILTER TABS --- */
+        .filter-container {
+            position: sticky;
+            top: 80px;
+            z-index: 90;
+            background: var(--bg-color);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .filter-menu {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            -ms-overflow-style: none;  
+            scrollbar-width: none;  
+        }
+        .filter-menu::-webkit-scrollbar { display: none; }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid #e5e5e5;
+            border-radius: 100px;
+            padding: 0.6rem 1.5rem;
+            font-family: var(--font-stack);
+            font-size: 0.9rem;
+            cursor: none; /* Use custom cursor */
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .filter-btn:hover { border-color: #000; color: #000; }
+
+        .filter-btn.active {
+            background-color: #000;
+            color: #fff;
+            border-color: #000;
+        }
+
+        /* --- 8. WORK GRID --- */
+        .work-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6vw;
+            padding-bottom: 10rem;
+        }
+
+        .work-item {
+            display: block;
+            position: relative;
+            margin-bottom: 6vw;
+        }
+
+        .work-item:nth-child(even) { margin-top: 10vw; }
+
+        .work-item.hidden { display: none; }
+
+        .img-wrapper {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            aspect-ratio: 4/5;
+            background-color: #e0e0e0;
+        }
+
+        .work-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), filter 0.5s;
+            filter: grayscale(0%);
+        }
+
+        .hover-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        
+        .arrow-icon {
+            width: 60px;
+            height: 60px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: scale(0.8);
+            transition: transform 0.4s;
+        }
+
+        .work-item:hover .hover-overlay { opacity: 1; }
+        .work-item:hover .arrow-icon { transform: scale(1); }
+        .work-item:hover img { transform: scale(1.05); }
+
+        .work-info {
+            margin-top: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .work-title { font-size: 1.2rem; font-weight: 500; letter-spacing: -0.02em; display: block; }
+        .work-cat { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem; display: block;}
+
+        /* --- 9. FOOTER --- */
+        footer {
+            border-top: 1px solid #e5e5e5;
+            padding: 6rem 0;
+        }
+
+        .footer-header {
+            font-size: clamp(2rem, 5vw, 4rem);
+            margin-bottom: 4rem;
+            font-weight: 400;
+            letter-spacing: -0.03em;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .contact-col h4 { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.5rem; letter-spacing: 0.1em; }
+        .contact-link { font-size: 1.2rem; display: block; margin-bottom: 0.5rem; font-weight: 400; transition: opacity 0.3s; }
+        .contact-link:hover { opacity: 0.5; }
+        
+        .social-link { display: flex; align-items: center; gap: 10px; font-size: 1rem; margin-bottom: 0.8rem; }
+        .social-icon { width: 18px; height: 18px; fill: currentColor; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .hero { grid-template-columns: 1fr; gap: 2rem; padding-top: 15vh; }
+            .hero-img-container { height: 50vh; order: -1; }
+            .work-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .work-item:nth-child(even) { margin-top: 0; }
+            .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+            .cursor { display: none; }
+        }
+        
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.19, 1, 0.22, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+    </style>
+</head>
+<body>
+
+    <div class="cursor" id="cursor"></div>
+
+    <header>
+        <div class="logo">ANDREAS DAHL ©2025</div>
+        <nav>
+            <a href="#contact" class="nav-link" data-hover>Get in touch</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <section class="hero">
+            <div class="reveal">
+                <span class="label">Portfolio</span>
+                <h1>Versatile.<br>Striking.<br>Purposeful.</h1>
+                
+                <p>
+                    Based in Gothenburg, specializing in e-commerce and editorial imagery. 
+                    Educated at Nordens Fotoskola and Berghs School of Communication.
+                </p>
+
+            </div>
+            
+            <div class="hero-img-container reveal" style="transition-delay: 0.1s;">
+                <img src="profile.jpg" alt="Andreas Dahl" onerror="this.src='https://images.unsplash.com/photo-1554048612-387768052bf7?q=80&w=2535&auto=format&fit=crop'">
+            </div>
+        </section>
+
+        <div class="filter-container reveal">
+            <div class="filter-menu">
+                <button class="filter-btn active" onclick="filterSelection('all')" data-hover>All Projects</button>
+                <button class="filter-btn" onclick="filterSelection('commercial')" data-hover>Commercial</button>
+                <button class="filter-btn" onclick="filterSelection('editorial')" data-hover>Editorial</button>
+                <button class="filter-btn" onclick="filterSelection('personal')" data-hover>Personal</button>
+            </div>
+        </div>
+
+        <section class="work-grid">
+            
+            <a href="#" class="work-item reveal" data-category="commercial" data-hover>
+                <div class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1516961642265-531546e84af2?q=80&w=1887&auto=format&fit=crop" alt="Glass">
+                    <div class="hover-overlay">
+                        <div class="arrow-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="work-info">
+                    <div>
+                        <span class="work-title">Orrefors & Kosta Boda</span>
+                        <span class="work-cat">Commercial Studio</span>
+                    </div>
+                    <span class="work-cat">2024</span>
+                </div>
+            </a>
+
+            <a href="#" class="work-item reveal" data-category="editorial" data-hover>
+                <div class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop" alt="Portrait">
+                    <div class="hover-overlay">
+                        <div class="arrow-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+                    </div>
+                </div>
+                <div class="work-info">
+                    <div>
+                        <span class="work-title">Scout Magazine</span>
+                        <span class="work-cat">Editorial Portrait</span>
+                    </div>
+                    <span class="work-cat">2025</span>
+                </div>
+            </a>
+
+            <a href="#" class="work-item reveal" data-category="commercial" data-hover>
+                <div class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1522758971460-1d21eed7dc1d?q=80&w=1887&auto=format&fit=crop" alt="Interior">
+                    <div class="hover-overlay">
+                        <div class="arrow-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+                    </div>
+                </div>
+                <div class="work-info">
+                    <div>
+                        <span class="work-title">Mio Interior</span>
+                        <span class="work-cat">Product Detail</span>
+                    </div>
+                    <span class="work-cat">2024</span>
+                </div>
+            </a>
+
+            <a href="#" class="work-item reveal" data-category="editorial" data-hover>
+                <div class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1740&auto=format&fit=crop" alt="Fashion">
+                    <div class="hover-overlay">
+                        <div class="arrow-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+                    </div>
+                </div>
+                <div class="work-info">
+                    <div>
+                        <span class="work-title">Wakakuu Street</span>
+                        <span class="work-cat">Campaign</span>
+                    </div>
+                    <span class="work-cat">2025</span>
+                </div>
+            </a>
+            
+            <a href="#" class="work-item reveal" data-category="commercial" data-hover>
+                <div class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=1974&auto=format&fit=crop" alt="Detail">
+                    <div class="hover-overlay">
+                        <div class="arrow-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+                    </div>
+                </div>
+                <div class="work-info">
+                    <div>
+                        <span class="work-title">Vårdväskan</span>
+                        <span class="work-cat">Commercial</span>
+                    </div>
+                    <span class="work-cat">2024</span>
+                </div>
+            </a>
+
+        </section>
+
+        <footer id="contact" class="reveal">
+            <h2 class="footer-header">Let's create visual impact.</h2>
+            
+            <div class="contact-grid">
+                <div class="contact-col">
+                    <h4>Contact</h4>
+                    <a href="mailto:andreasdahl.nu@gmail.com" class="contact-link" data-hover>andreasdahl.nu@gmail.com</a>
+                    <a href="tel:+46725291885" class="contact-link" data-hover>+46 (0) 725 291 885</a>
+                </div>
+
+                <div class="contact-col">
+                    <h4>Socials</h4>
+                    <a href="https://instagram.com" target="_blank" class="social-link" data-hover>
+                        <svg class="social-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        Instagram
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" class="social-link" data-hover>
+                        <svg class="social-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/></svg>
+                        LinkedIn
+                    </a>
+                </div>
+
+                <div class="contact-col">
+                    <h4>Location</h4>
+                    <p style="color:var(--text-main); font-size: 1.1rem; max-width: none;">Gothenburg, Sweden<br>Available worldwide</p>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- CUSTOM CURSOR LOGIC ---
+        const cursor = document.getElementById('cursor');
+        
+        // Flytta markören
+        document.addEventListener('mousemove', e => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // Hover effect för klickbara element
+        const hoverElements = document.querySelectorAll('[data-hover]');
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+
+        // --- FILTER LOGIC ---
+        function filterSelection(category) {
+            const items = document.querySelectorAll(".work-item");
+            const buttons = document.querySelectorAll(".filter-btn");
+
+            buttons.forEach(btn => btn.classList.remove("active"));
+            event.currentTarget.classList.add("active");
+
+            items.forEach(item => {
+                if (category === 'all' || item.getAttribute('data-category') === category) {
+                    item.style.display = "block";
+                    setTimeout(() => { item.style.opacity = "1"; item.style.transform = "translateY(0)"; }, 50);
+                } else {
+                    item.style.opacity = "0";
+                    item.style.transform = "translateY(20px)";
+                    setTimeout(() => { item.style.display = "none"; }, 300);
+                }
+            });
+        }
+
+        // --- SCROLL ANIMATION ---
+        document.addEventListener("DOMContentLoaded", function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
