@@ -11,10 +11,11 @@
             --text-main: #050505;
             --text-muted: #888888;
             --spacing-outer: 4vw; 
+            --gap-size: 2rem; /* Tajtare avstånd mellan bilder */
             --font-stack: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; /* Hide default cursor */ }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
         
         html { scroll-behavior: smooth; }
 
@@ -26,44 +27,40 @@
             overflow-x: hidden;
         }
 
-        /* --- 2. CUSTOM CURSOR (IMPROVED VISIBILITY) --- */
+        /* --- 2. CUSTOM CURSOR --- */
         .cursor {
-            width: 16px; /* Större, tydligare prick */
+            width: 16px;
             height: 16px;
-            background-color: #fff; /* Vit fyllning */
+            background-color: #fff;
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
             z-index: 9999;
             transform: translate(-50%, -50%);
-            transition: width 0.3s cubic-bezier(0.19, 1, 0.22, 1), 
-                        height 0.3s cubic-bezier(0.19, 1, 0.22, 1), 
-                        background-color 0.3s;
-            mix-blend-mode: difference; /* Inverterar färgen mot bakgrunden = Alltid synlig */
+            transition: transform 0.1s, width 0.3s, height 0.3s, background-color 0.3s;
+            mix-blend-mode: difference;
         }
 
-        /* När man hovrar över något klickbart */
         .cursor.hovered {
             width: 60px;
             height: 60px;
-            background-color: transparent; /* Blir genomskinlig */
-            border: 2px solid #fff; /* Vit ram (som blir svart mot vit bakgrund pga difference) */
+            background-color: transparent;
+            border: 2px solid #fff;
         }
 
-        /* Dölj custom cursor på mobil/touch */
         @media (hover: none) { .cursor { display: none; } * { cursor: auto; } }
 
         /* --- 3. TYPOGRAPHY --- */
         h1 {
-            font-size: clamp(3.5rem, 8vw, 9rem);
-            line-height: 0.9;
+            font-size: clamp(3rem, 6vw, 7rem); /* Lite mindre gigantisk för att spara plats */
+            line-height: 1;
             letter-spacing: -0.04em;
             font-weight: 400;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         p {
-            font-size: 1.125rem;
+            font-size: 1rem;
             line-height: 1.5;
             color: var(--text-muted);
             max-width: 580px;
@@ -74,7 +71,7 @@
             text-transform: uppercase;
             letter-spacing: 0.15em;
             font-weight: 700;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             display: block;
             color: var(--text-main);
         }
@@ -84,13 +81,13 @@
         /* --- 4. LAYOUT --- */
         .container {
             padding: 0 var(--spacing-outer);
-            max-width: 1920px;
+            max-width: 1600px; /* Lite smalare maxbredd för att hålla ihop det */
             margin: 0 auto;
         }
 
         /* --- 5. STICKY HEADER --- */
         header {
-            padding: 2rem var(--spacing-outer);
+            padding: 1.5rem var(--spacing-outer);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -99,32 +96,28 @@
             left: 0;
             width: 100%;
             z-index: 100;
-            background: rgba(250, 250, 250, 0.85);
-            backdrop-filter: blur(12px);
-            transition: transform 0.3s ease;
+            background: rgba(250, 250, 250, 0.9); /* Mer täckande för clean look */
+            backdrop-filter: blur(10px);
         }
 
-        .logo { font-weight: 700; font-size: 1rem; letter-spacing: -0.02em; text-transform: uppercase; }
-        .nav-link { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; position: relative; }
-        
-        .nav-link::after {
-            content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: #000; transition: width 0.3s;
-        }
+        .logo { font-weight: 700; font-size: 0.9rem; letter-spacing: -0.02em; text-transform: uppercase; }
+        .nav-link { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; position: relative; }
+        .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: #000; transition: width 0.3s; }
         .nav-link:hover::after { width: 100%; }
 
         /* --- 6. HERO SECTION --- */
         .hero {
-            padding: 25vh 0 10vh 0;
+            padding: 18vh 0 8vh 0; /* Mindre luft ovanför/under */
             display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 4rem;
+            grid-template-columns: 1.2fr 0.8fr; /* Tajtare text-layout */
+            gap: 3rem;
             align-items: end;
         }
 
         .hero-img-container {
             position: relative;
             width: 100%;
-            height: 65vh; 
+            height: 60vh; 
             overflow: hidden;
         }
 
@@ -136,14 +129,11 @@
             transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        /* --- 7. FILTER TABS --- */
+        /* --- 7. FILTER TABS (CLEANED UP) --- */
         .filter-container {
-            position: sticky;
-            top: 80px;
-            z-index: 90;
-            background: var(--bg-color);
-            padding: 1rem 0;
+            /* Tog bort sticky för att slippa "boxig" känsla */
             margin-bottom: 2rem;
+            padding-top: 1rem;
         }
 
         .filter-menu {
@@ -160,10 +150,10 @@
             background: transparent;
             border: 1px solid #e5e5e5;
             border-radius: 100px;
-            padding: 0.6rem 1.5rem;
+            padding: 0.5rem 1.2rem;
             font-family: var(--font-stack);
-            font-size: 0.9rem;
-            cursor: none; /* Use custom cursor */
+            font-size: 0.85rem;
+            cursor: none; 
             color: var(--text-muted);
             transition: all 0.3s ease;
             white-space: nowrap;
@@ -177,21 +167,19 @@
             border-color: #000;
         }
 
-        /* --- 8. WORK GRID --- */
+        /* --- 8. WORK GRID (SYMMETRICAL & TIGHT) --- */
         .work-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 6vw;
-            padding-bottom: 10rem;
+            grid-template-columns: 1fr 1fr; /* Exakt 50/50 */
+            gap: var(--gap-size); /* Mycket tajtare gap */
+            padding-bottom: 8rem;
         }
 
         .work-item {
             display: block;
             position: relative;
-            margin-bottom: 6vw;
+            margin-bottom: 0; /* Inget extra margin under */
         }
-
-        .work-item:nth-child(even) { margin-top: 10vw; }
 
         .work-item.hidden { display: none; }
 
@@ -199,8 +187,9 @@
             position: relative;
             overflow: hidden;
             width: 100%;
-            aspect-ratio: 4/5;
+            aspect-ratio: 4/5; /* Standardiserat format */
             background-color: #e0e0e0;
+            margin-bottom: 0.8rem;
         }
 
         .work-item img {
@@ -211,6 +200,7 @@
             filter: grayscale(0%);
         }
 
+        /* Hover Overlay */
         .hover-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -223,8 +213,8 @@
         }
         
         .arrow-icon {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             background: #fff;
             border-radius: 50%;
             display: flex;
@@ -239,24 +229,23 @@
         .work-item:hover img { transform: scale(1.05); }
 
         .work-info {
-            margin-top: 1.2rem;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
         }
 
-        .work-title { font-size: 1.2rem; font-weight: 500; letter-spacing: -0.02em; display: block; }
-        .work-cat { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem; display: block;}
+        .work-title { font-size: 1rem; font-weight: 500; letter-spacing: -0.01em; display: block; color: var(--text-main); }
+        .work-cat { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; display: block;}
 
         /* --- 9. FOOTER --- */
         footer {
             border-top: 1px solid #e5e5e5;
-            padding: 6rem 0;
+            padding: 4rem 0;
         }
 
         .footer-header {
-            font-size: clamp(2rem, 5vw, 4rem);
-            margin-bottom: 4rem;
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            margin-bottom: 3rem;
             font-weight: 400;
             letter-spacing: -0.03em;
         }
@@ -267,24 +256,33 @@
             gap: 2rem;
         }
 
-        .contact-col h4 { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.5rem; letter-spacing: 0.1em; }
-        .contact-link { font-size: 1.2rem; display: block; margin-bottom: 0.5rem; font-weight: 400; transition: opacity 0.3s; }
-        .contact-link:hover { opacity: 0.5; }
+        .contact-col h4 { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1rem; letter-spacing: 0.1em; }
+        .contact-link { font-size: 1rem; display: block; margin-bottom: 0.4rem; font-weight: 400; transition: opacity 0.3s; }
+        .contact-link:hover { opacity: 0.6; }
         
-        .social-link { display: flex; align-items: center; gap: 10px; font-size: 1rem; margin-bottom: 0.8rem; }
-        .social-icon { width: 18px; height: 18px; fill: currentColor; }
+        .social-link { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; margin-bottom: 0.6rem; }
+        .social-icon { width: 16px; height: 16px; fill: currentColor; }
 
         /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
-            .hero { grid-template-columns: 1fr; gap: 2rem; padding-top: 15vh; }
-            .hero-img-container { height: 50vh; order: -1; }
-            .work-grid { grid-template-columns: 1fr; gap: 2rem; }
-            .work-item:nth-child(even) { margin-top: 0; }
-            .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+            .hero { grid-template-columns: 1fr; gap: 2rem; padding-top: 12vh; }
+            .hero-img-container { height: 45vh; order: -1; }
+            
+            /* PÅ MOBIL: 1 kolumn */
+            .work-grid { 
+                grid-template-columns: 1fr; 
+                gap: 3rem; /* Lite mer luft vertikalt på mobil */
+            }
+            
+            .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
             .cursor { display: none; }
+            
+            /* Fixar mobilmeny-bakgrunden */
+            .filter-menu { padding-right: var(--spacing-outer); }
         }
         
-        .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.19, 1, 0.22, 1); }
+        /* Animation */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
     </style>
@@ -306,12 +304,10 @@
             <div class="reveal">
                 <span class="label">Portfolio</span>
                 <h1>Versatile.<br>Striking.<br>Purposeful.</h1>
-                
                 <p>
                     Based in Gothenburg, specializing in e-commerce and editorial imagery. 
                     Educated at Nordens Fotoskola and Berghs School of Communication.
                 </p>
-
             </div>
             
             <div class="hero-img-container reveal" style="transition-delay: 0.1s;">
@@ -334,17 +330,12 @@
                 <div class="img-wrapper">
                     <img src="https://images.unsplash.com/photo-1516961642265-531546e84af2?q=80&w=1887&auto=format&fit=crop" alt="Glass">
                     <div class="hover-overlay">
-                        <div class="arrow-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        </div>
+                        <div class="arrow-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
                     </div>
                 </div>
                 <div class="work-info">
-                    <div>
-                        <span class="work-title">Orrefors & Kosta Boda</span>
-                        <span class="work-cat">Commercial Studio</span>
-                    </div>
-                    <span class="work-cat">2024</span>
+                    <span class="work-title">Orrefors & Kosta Boda</span>
+                    <span class="work-cat">Commercial Studio</span>
                 </div>
             </a>
 
@@ -356,11 +347,8 @@
                     </div>
                 </div>
                 <div class="work-info">
-                    <div>
-                        <span class="work-title">Scout Magazine</span>
-                        <span class="work-cat">Editorial Portrait</span>
-                    </div>
-                    <span class="work-cat">2025</span>
+                    <span class="work-title">Scout Magazine</span>
+                    <span class="work-cat">Editorial Portrait</span>
                 </div>
             </a>
 
@@ -372,11 +360,8 @@
                     </div>
                 </div>
                 <div class="work-info">
-                    <div>
-                        <span class="work-title">Mio Interior</span>
-                        <span class="work-cat">Product Detail</span>
-                    </div>
-                    <span class="work-cat">2024</span>
+                    <span class="work-title">Mio Interior</span>
+                    <span class="work-cat">Product Detail</span>
                 </div>
             </a>
 
@@ -388,11 +373,8 @@
                     </div>
                 </div>
                 <div class="work-info">
-                    <div>
-                        <span class="work-title">Wakakuu Street</span>
-                        <span class="work-cat">Campaign</span>
-                    </div>
-                    <span class="work-cat">2025</span>
+                    <span class="work-title">Wakakuu Street</span>
+                    <span class="work-cat">Campaign</span>
                 </div>
             </a>
             
@@ -404,11 +386,21 @@
                     </div>
                 </div>
                 <div class="work-info">
-                    <div>
-                        <span class="work-title">Vårdväskan</span>
-                        <span class="work-cat">Commercial</span>
+                    <span class="work-title">Vårdväskan</span>
+                    <span class="work-cat">Commercial</span>
+                </div>
+            </a>
+
+             <a href="#" class="work-item reveal" data-category="personal" data-hover>
+                <div class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1493863641943-9b68992a8d07?q=80&w=2058&auto=format&fit=crop" alt="Artistic">
+                    <div class="hover-overlay">
+                        <div class="arrow-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
                     </div>
-                    <span class="work-cat">2024</span>
+                </div>
+                <div class="work-info">
+                    <span class="work-title">Emma</span>
+                    <span class="work-cat">Personal Project</span>
                 </div>
             </a>
 
@@ -438,7 +430,7 @@
 
                 <div class="contact-col">
                     <h4>Location</h4>
-                    <p style="color:var(--text-main); font-size: 1.1rem; max-width: none;">Gothenburg, Sweden<br>Available worldwide</p>
+                    <p style="color:var(--text-main); font-size: 1rem; max-width: none;">Gothenburg, Sweden<br>Available worldwide</p>
                 </div>
             </div>
         </footer>
@@ -446,16 +438,12 @@
     </div>
 
     <script>
-        // --- CUSTOM CURSOR LOGIC ---
+        // --- CUSTOM CURSOR ---
         const cursor = document.getElementById('cursor');
-        
-        // Flytta markören
         document.addEventListener('mousemove', e => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
-
-        // Hover effect för klickbara element
         const hoverElements = document.querySelectorAll('[data-hover]');
         hoverElements.forEach(el => {
             el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
